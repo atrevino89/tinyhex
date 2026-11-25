@@ -17,17 +17,17 @@ int main(int argc, char *argv[]) {
 
   unsigned char buffer[8];
 
-  size_t bytes_read = -1;
-  while (bytes_read > 1) {
-    bytes_read = fread(buffer, 1, sizeof(buffer), file);
-    if (bytes_read == 0) {
-      fclose(file);
-      return EXIT_SUCCESS;
+  size_t bytes_read;
+  size_t offset = 0;
+  while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+    printf("%08zx  ", offset);
+    for (size_t i = 0; i < bytes_read; i++) {
+      printf("%02x ", buffer[i]);
     }
-    printf("Read %zu bytes\n", bytes_read);
+    printf("\n");
+    offset += bytes_read;
   }
-  
+  fclose(file);
+
   return EXIT_SUCCESS;
-
 }
-
