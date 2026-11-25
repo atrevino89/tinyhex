@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,7 +25,22 @@ int main(int argc, char *argv[]) {
     for (size_t i = 0; i < bytes_read; i++) {
       printf("%02x ", buffer[i]);
     }
-    printf("\n");
+
+    // fill up with spaces when there are less bytes_read than 8 (bytes)
+    for (size_t c = bytes_read; c < sizeof(buffer); c++) {
+      printf("   ");
+    }
+    putchar(' ');
+    putchar('|');
+    for (size_t i = 0; i < bytes_read; i++) {
+      if (!isprint(buffer[i])) {
+        putchar('.');
+        continue;
+      }
+      putchar(buffer[i]);
+    }
+    putchar('|');
+    putchar('\n');
     offset += bytes_read;
   }
   fclose(file);
