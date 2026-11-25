@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
   FILE *file = fopen(fn, "rb");
 
   if (file == NULL) {
-    fprintf(stderr, "file opening error\n");
+    perror("file opening error");
     return EXIT_FAILURE;
   }
 
@@ -43,7 +43,17 @@ int main(int argc, char *argv[]) {
     putchar('\n');
     offset += bytes_read;
   }
-  fclose(file);
+  int exit_status = EXIT_SUCCESS;
+  if (ferror(file)) {
+    exit_status = EXIT_FAILURE;
+    perror("error on file");
+  }
 
-  return EXIT_SUCCESS;
+  int err = fclose(file);
+  if (err) {
+    exit_status = EXIT_FAILURE;
+    perror("error closing the file");
+
+  }
+  return exit_status;
 }
